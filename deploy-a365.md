@@ -48,6 +48,7 @@ INSERT OR REPLACE INTO session_state (key, value) VALUES
   ('global_admin', '<value>'),
   ('model_deployment', '<value>'),
   ('model_endpoint', '<value>'),
+  ('project_path', '<value>'),
   ('prereqs_confirmed', 'true/false');
 ```
 
@@ -258,6 +259,7 @@ Display summary in this format, confirm, then proceed to §0:
   Global Admin ......... <value>
   Model Deployment ..... <value>
   Model Endpoint ....... <value>
+  Project Path ......... <value>
 
   All correct? (yes / fix <number> / exit)
 ```
@@ -276,6 +278,46 @@ git clone https://github.com/microsoft/Agent365-Samples.git
 cd Agent365-Samples
 ```
 Then verify directories and open in VS Code with `code .`
+
+### Step 0.3 · Select the Project Directory
+
+📖 The cloned repository contains multiple sample projects under `python/`, `dotnet/`, and `nodejs/`. The A365 CLI needs to run from the directory that contains the actual project files (`pyproject.toml`, `requirements.txt`, `agent.py`, etc.) — NOT the parent folder. Getting this wrong causes platform detection failures during deployment.
+
+**The agent MUST:**
+
+1. **Scan for sample agent directories** inside the cloned repo:
+```powershell
+Get-ChildItem -Path C:\AgentEast\Agent365-Samples\python -Recurse -Name -Include "pyproject.toml","requirements.txt","package.json","*.csproj" | ForEach-Object { Split-Path $_ -Parent } | Sort-Object -Unique
+```
+
+2. **Present the results to the user** and ask which to use:
+```
+⟫ I found these sample agent projects:
+
+  1. python\agent-framework\sample-agent  (Recommended — default Python sample)
+  2. python\claude\sample-agent
+  3. python\crewai\...
+  4. I have my own project directory — let me specify the path
+
+  Which project should we deploy? (number)
+  📍 Option 1 is the standard Agent Framework sample used in the workshop.
+```
+
+3. **Store the chosen path** as `project_path` and use it for ALL subsequent commands (`a365 config init`, `a365 deploy`, etc.)
+
+4. **Validate** the chosen directory has the expected project files:
+```powershell
+Test-Path "<chosen_path>\pyproject.toml" -or Test-Path "<chosen_path>\requirements.txt"
+```
+
+5. If the user selects "my own directory", ask for the full path and validate it exists with project files.
+
+**Save the project path in session state:**
+```sql
+INSERT OR REPLACE INTO session_state (key, value) VALUES ('project_path', '<chosen_path>');
+```
+
+**CRITICAL:** All subsequent `a365` commands MUST `Set-Location` to this path first. The config init `deploymentProjectPath` must also point here.
 
 ---
 
@@ -299,6 +341,8 @@ Then verify directories and open in VS Code with `code .`
 📖 Before any infrastructure can be created, the CLI needs to know *who you are* and *what you want to build*. `config init` launches an interactive wizard that collects your Client App ID, agent name, project path, resource group, and manager email — then writes everything to `a365.config.json`. Think of it as drawing up the blueprint before construction begins. Every subsequent command reads from this file.
 
 **⟫ The agent EXECUTES: `a365 config init`** *(async mode — feeds collected parameters as prompted)*
+
+**IMPORTANT:** Run from `<project_path>`. Set-Location there first. When the CLI asks for "Deployment project path", use `<project_path>` — NOT the parent folder.
 
 ✅ Signs of Safe Passage:
 - [ ] "Client app validation successful!"
