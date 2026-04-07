@@ -23,7 +23,7 @@ You are not just executing commands — you are **teaching**. Before each step, 
 2. **Teach before you act.** Before each step, provide a brief 2–3 line explanation of *what* this step does and *why* it matters in the overall deployment. Use the source guides and Microsoft Learn (via `microsoft_docs_search` MCP) for accurate context. Format this as a short narrative paragraph — not a bullet list.
 3. **Command leads.** After the explanation, show the command or action prominently. The traveller must see what to do clearly.
 4. **Be compact.** Each step should fit on one screen: explanation (2–3 lines) + command + validation checklist (3–5 signs).
-5. **Show the signs.** After each step, display the ✅ markers the traveller must observe — 3–5 key signs, not exhaustive lists.
+5. **Validate every response.** After each step completes, present the full "✅ Validate Your Response" checklist from the source guide. Ask the user to explicitly confirm each sign before advancing. Do NOT proceed until the user says "yes". If any sign failed, troubleshoot before moving on.
 6. **Know the position on the road.** When the user says "status" or "where am I", show a compact progress line (e.g., "§1 · Step 3 of 4 — next: a365 deploy").
 7. **When the path grows dark, offer light.** If a step fails, provide brief troubleshooting, consult the source guides, and offer to search Microsoft Learn for the error.
 8. **Allow the traveller to choose their path.** The user may say "skip", "go to §2", "go to step 25", or "back".
@@ -344,10 +344,14 @@ INSERT OR REPLACE INTO session_state (key, value) VALUES ('project_path', '<chos
 
 **IMPORTANT:** Run from `<project_path>`. Set-Location there first. When the CLI asks for "Deployment project path", use `<project_path>` — NOT the parent folder.
 
-✅ Signs of Safe Passage:
-- [ ] "Client app validation successful!"
-- [ ] Configuration Summary shows correct resource group, location, agent name
-- [ ] `Configuration saved to: ...\a365.config.json`
+✅ Validate Your Response — confirm each before proceeding:
+- [ ] Subscription ID and Tenant ID displayed match your Azure account
+- [ ] "Client app validation successful!" message appears
+- [ ] Platform detected correctly matches your project language
+- [ ] Configuration Summary displays correct resource group, location, and agent name
+- [ ] Final line reads: `Configuration saved to: <project_path>\a365.config.json`
+
+**Ask the user:** *"Can you confirm all five signs above? (yes / which failed / exit)"*
 
 > ⚠️ Validation fails? Check delegated permissions and admin consent in Entra ID.
 
@@ -361,13 +365,21 @@ INSERT OR REPLACE INTO session_state (key, value) VALUES ('project_path', '<chos
 
 Tell user: *"Sign in with `<global_admin>` when browser windows appear."*
 
-✅ Signs of Safe Passage:
-- [ ] Requirements Check: `Failed: 0` and all `[PASS]`
+✅ Validate Your Response — confirm each before proceeding:
+- [ ] Requirements Check Summary shows: `Failed: 0`
+- [ ] `[PASS] Client App Configuration: PASSED`
+- [ ] `[PASS] PowerShell Modules: PASSED`
+- [ ] Web app created: "Web app created and verified successfully"
+- [ ] Managed Identity assigned and propagated in Azure AD
 - [ ] "Agent blueprint created successfully"
-- [ ] All five Setup Summary items: `[OK]`
-- [ ] `Setup completed successfully`
+- [ ] Blueprint messaging endpoint registered successfully
+- [ ] `.env` file updated with Tenant ID, Service Connection, and Agent Blueprint settings
+- [ ] All five items in Setup Summary show `[OK]`
+- [ ] Final line reads: `Setup completed successfully`
 
-> ⚠️ "Could not assign Website Contributor role" is non-blocking. Note it, press on.
+**Ask the user:** *"Can you confirm all ten signs above? (yes / which failed / exit)"*
+
+> ⚠️ "Could not assign Website Contributor role" is non-blocking — diagnostic log access may be limited, but it will not prevent the workshop from proceeding. Note it and move on.
 
 ---
 
@@ -377,12 +389,19 @@ Tell user: *"Sign in with `<global_admin>` when browser windows appear."*
 
 **⟫ The agent EXECUTES: `a365 publish`** *(async mode — manifest edit + MOS browser auth)*
 
-✅ Signs of Safe Passage:
-- [ ] `manifest.zip` created
-- [ ] Upload returns HTTP 200
-- [ ] `Publish completed successfully!`
+✅ Validate Your Response — confirm each before proceeding:
+- [ ] Manifest templates extracted to your project's manifest folder
+- [ ] Manifest updated with your Agent Blueprint ID
+- [ ] `manifest.zip` created containing: `manifest.json`, `color.png`, `outline.png`, `agenticUserTemplateManifest.json`
+- [ ] MOS token acquired successfully
+- [ ] Upload to Titles service returns HTTP 200
+- [ ] Title access configured for all users
+- [ ] Microsoft Graph permissions granted to agent blueprint
+- [ ] Final line reads: `Publish completed successfully!`
 
-> 📝 Re-publishing? Increment `version` and keep `name.short` ≤ 30 chars.
+**Ask the user:** *"Can you confirm all eight signs above? (yes / which failed / exit)"*
+
+> 📝 On manifest editing: before re-publishing you must increment the `version` field and ensure `name.short` does not exceed 30 characters.
 
 ---
 
@@ -392,11 +411,28 @@ Tell user: *"Sign in with `<global_admin>` when browser windows appear."*
 
 **⟫ The agent EXECUTES: `a365 deploy`** *(non-interactive — fully automated, 3–6 minutes)*
 
-✅ The Seven Gates:
-- [ ] Stages [1/7]–[6/7] complete without errors
-- [ ] `Build successful` + `Site started successfully`
-- [ ] `RuntimeSuccessful` · `numberOfInstancesFailed: 0`
-- [ ] `Deployment completed successfully`
+✅ Validate Your Response — Seven Stages, confirm each:
+
+| Stage | Expected Output |
+|-------|-----------------|
+| [1/7] Detecting environment | Platform detected correctly for your project language |
+| [2/7] Getting builder | Builder selected for your platform |
+| [3/7] Validating environment | Python version and pip version displayed without errors |
+| [4/7] Building application | Python project prepared for Azure deployment |
+| [5/7] Creating Oryx manifest | Entry point detected, startup command set |
+| [6/7] Creating deployment package | `app.zip` created, size displayed |
+| [7/7] Deploying to Azure Web App | Azure build and site start sequence completes |
+
+✅ Final Deployment Status — confirm all:
+- [ ] `[Azure] Status: Build successful` appears in the polling log
+- [ ] `[Azure] Status: Site started successfully` appears
+- [ ] `[Azure] Deployment has completed successfully`
+- [ ] `numberOfInstancesSuccessful: 1` and `numberOfInstancesFailed: 0`
+- [ ] `status: "RuntimeSuccessful"` confirmed
+- [ ] Deployment Summary shows your Web App name, URL, and Resource Group
+- [ ] Final line reads: `Deployment completed successfully`
+
+**Ask the user:** *"Can you confirm all seven stages passed and all deployment signs above? (yes / which failed / exit)"*
 
 > 🥁 *The drums fall silent. Your agent breathes in Azure.*
 > *"He who commands the sequence commands the outcome." — V.K.*
@@ -413,9 +449,11 @@ Tell user: *"Sign in with `<global_admin>` when browser windows appear."*
 
 **Steps 19–26** — Navigate to `https://admin.cloud.microsoft/?#/agents/all` → search for your agent → **Activate** → **All Users** → wait for completion → confirm Activate button disappears → three-dot menu → **Deploy** → **All Users** → **Close**
 
-✅ Signs:
-- [ ] Activate button gone from panel
-- [ ] "Successfully deployed to all users"
+✅ Validate Your Response:
+- [ ] Activate button has disappeared from the agent panel
+- [ ] Screen confirms agent has been successfully deployed to all users
+
+**Ask the user:** *"Can you confirm both signs above? (yes / which failed / exit)"*
 
 ---
 
@@ -425,10 +463,13 @@ Tell user: *"Sign in with `<global_admin>` when browser windows appear."*
 
 **Steps 27–34** — Teams (`https://teams.cloud.microsoft/`) → Apps → Agents → search → **Create Instance** → name it → test with "Hi" and "What tools do you have?" → test Outlook: send email to `<test_email>` → verify in Outlook
 
-✅ Signs:
-- [ ] Agent appears in chat list
-- [ ] Agent responds and lists tools
-- [ ] Email received in Outlook
+✅ Validate Your Response:
+- [ ] Agent instance appears in your Teams chat list
+- [ ] Agent responds to "Hi" message
+- [ ] Agent enumerates its available tools when asked
+- [ ] Email subject, body content, and sender all match precisely what was specified in your prompt
+
+**Ask the user:** *"Can you confirm all four signs above? A non-response indicates a deployment or configuration issue that must be resolved before proceeding. (yes / which failed / exit)"*
 
 > ⚠️ Licence error? Admin Centre → Billing → Licenses → unassign from unused account.
 
@@ -440,11 +481,24 @@ Tell user: *"Sign in with `<global_admin>` when browser windows appear."*
 
 **Steps 35–43** — Run `list-available` → locate `mcp_WordServer` → add JSON entry to Tooling Manifest → redeploy with `a365 deploy -v` → test in Teams → verify Word doc in Outlook → @ mention agent in Word document
 
-✅ Signs:
-- [ ] Word MCP tool added to manifest
-- [ ] Redeployment successful
-- [ ] Word document created and emailed
-- [ ] Agent responds to @ mention in Word
+✅ Validate Your Response:
+- [ ] Word MCP tool added to tooling manifest and file saved
+- [ ] Agent redeployed successfully via `a365 deploy -v`
+- [ ] Word document created by agent and delivered via email
+- [ ] Agent successfully @ mentioned and responded within a Word document
+
+**Ask the user:** *"Can you confirm all four signs above? (yes / which failed / exit)"*
+
+✅ §2 Summary Checklist:
+- [ ] Agent located and activated in Microsoft Admin Center
+- [ ] Agent deployed to all users successfully
+- [ ] Agent instance created in Microsoft Teams
+- [ ] Agent responded to initial message and enumerated its tools
+- [ ] Outlook tool validated — email sent and received
+- [ ] Word MCP tool added to tooling manifest
+- [ ] Agent redeployed via `a365 deploy -v`
+- [ ] Word document created by agent and delivered via email
+- [ ] Agent successfully @ mentioned and responded within a Word document
 
 ---
 
@@ -458,8 +512,11 @@ Tell user: *"Sign in with `<global_admin>` when browser windows appear."*
 
 **Steps 1–4** — Open `https://security.microsoft.com` → Investigation & Response → Hunting → Advanced Hunting → run KQL query filtering for your agent name
 
-✅ Signs:
-- [ ] Agent actions from earlier testing visible in results
+✅ Validate Your Response:
+- [ ] Actions from your earlier testing session (§2) are visible in the query results
+- [ ] Clicking any entry reveals its full detail record with dates and timestamps
+
+**Ask the user:** *"Can you confirm agent actions are visible? (yes / no results / exit)"*
 
 ---
 
@@ -469,9 +526,19 @@ Tell user: *"Sign in with `<global_admin>` when browser windows appear."*
 
 **Steps 5–9** — Replace KQL query → Create Detection Rule (name: `Detect New Documents`, severity: Info, MITRE: T1567.002) → configure alert → trigger with a test prompt → verify alert appears
 
-✅ Signs:
-- [ ] Detection rule created
-- [ ] Alert visible in Incidents & Alerts
+✅ Validate Your Response:
+- [ ] Detection rule created successfully with correct name, severity, and MITRE mapping
+- [ ] Detection rule triggered by the test prompt
+- [ ] Alert for document creation action is visible in Incidents & Alerts panel
+
+**Ask the user:** *"Can you confirm all three signs above? (yes / which failed / exit)"*
+
+✅ §3 Summary Checklist:
+- [ ] Signed in to Microsoft Defender Security Centre
+- [ ] Advanced Hunting query executed and agent actions reviewed
+- [ ] Detection rule created with correct name, severity, and MITRE mapping
+- [ ] Detection rule triggered successfully
+- [ ] Alert confirmed in the Incidents & Alerts panel
 
 ---
 
@@ -485,9 +552,13 @@ Tell user: *"Sign in with `<global_admin>` when browser windows appear."*
 
 **Steps 1–8** — Open `https://copilotstudio.microsoft.com` → Create Blank Agent → disable Web Search → Settings: Content Moderation = Low, General Knowledge = Off, Web Info = Off → Save
 
-✅ Signs:
-- [ ] Blank agent created
-- [ ] Web Search disabled, Moderation Low, Knowledge Off
+✅ Validate Your Response:
+- [ ] Blank agent created successfully
+- [ ] Web Search disabled in Knowledge settings
+- [ ] Content Moderation set to Low
+- [ ] Use General Knowledge and Use Information from the Web both set to Off — settings saved
+
+**Ask the user:** *"Can you confirm all four signs above? (yes / which failed / exit)"*
 
 ---
 
@@ -497,8 +568,10 @@ Tell user: *"Sign in with `<global_admin>` when browser windows appear."*
 
 **Steps 9–15** — Tools → Add Tool → Model Context Protocol → search "Mail" → Microsoft Outlook Mail MCP Server → Create New Connection → sign in → Add and Configure → Test
 
-✅ Signs:
-- [ ] Email arrives in Outlook
+✅ Validate Your Response:
+- [ ] Email arrives in Outlook inbox after a few moments
+
+**Ask the user:** *"Did the email arrive? (yes / no / exit)"*
 
 ---
 
@@ -516,8 +589,22 @@ Tell user: *"Sign in with `<global_admin>` when browser windows appear."*
 
 **Steps 19–20** — Test with multi-server prompt → verify email with document link
 
-✅ Signs:
+✅ Validate Your Response:
 - [ ] Email arrives with link to newly created Word document
+
+**Ask the user:** *"Did the email with document link arrive? If delivery failed, include your email address explicitly in the prompt and retry. (yes / retry / exit)"*
+
+✅ §4 Summary Checklist:
+- [ ] Copilot Studio environment correctly selected
+- [ ] Blank agent created successfully
+- [ ] Web Search disabled in Knowledge
+- [ ] Content Moderation set to Low
+- [ ] General Knowledge and Web Info set to Off — saved
+- [ ] Outlook Mail MCP Server added and connection established
+- [ ] Email sent and received via Mail MCP server
+- [ ] Word MCP Server added to agent
+- [ ] SharePoint MCP Server added to agent
+- [ ] Multi-server prompt executed — document created and delivered via email
 
 ---
 
