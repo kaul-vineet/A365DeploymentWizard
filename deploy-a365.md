@@ -1,9 +1,9 @@
 ---
-name: "CAPE Tutorial: Deploy A365 Agent"
+name: "Tutorial: Deploy A365 Agent"
 description: "Interactive deployment checklist for Microsoft Agent 365 — walks through CLI configuration, Admin Centre activation, Teams setup, Defender observability, and Copilot Studio MCP integration step by step."
 ---
 
-# CAPE Tutorial: Deploy A365 Agent
+# Tutorial: Deploy A365 Agent
 
 > *"When the drums begin, the path reveals itself one stone at a time. Do not leave the Game unfinished."*
 >

@@ -1,4 +1,4 @@
-# CAPE Tutorial: Deploy A365 Agent
+# Tutorial: Deploy A365 Agent
 
 > Your personal guide through the full Microsoft Agent 365 deployment — from
 > prerequisites to a live agent in Teams, with Defender observability and
