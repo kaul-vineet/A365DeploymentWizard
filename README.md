@@ -79,16 +79,16 @@ Before starting, ensure you have:
 
 The skill will confirm each of these before you begin.
 
-## What the Skill Executes
+## How Agent Helps
 
 The skill runs commands directly — you don't need to copy-paste anything.
 
-| Command Type | Executed by |
-|-------------|-------------|
-| Verification (`az account show`, Graph API checks) | Skill runs automatically |
-| Non-interactive (`git clone`, `a365 deploy`, `code .`) | Skill runs automatically |
-| Interactive with browser auth (`a365 config init`, `setup all`, `publish`) | Skill runs, you sign in when browser opens |
-| UI steps (Admin Centre, Teams, Copilot Studio) | Skill guides you step by step |
+| Guidance |
+|----------|
+| Verification (`az account show`, Graph API checks) |
+| Non-interactive (`git clone`, `a365 deploy`, `code .`) |
+| Interactive with browser auth (`a365 config init`, `setup all`, `publish`) |
+| UI steps (Admin Centre, Teams, Copilot Studio) |
 
 ## Installation
 
