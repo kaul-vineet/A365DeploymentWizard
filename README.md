@@ -121,8 +121,6 @@ Uses Microsoft Learn documentation via MCP for up-to-date context.
 > *Named after ISRO's second indigenous rocket, the RH-100.*
 
 Planned for the next release:
-- **WAM auth workaround** — explore `--use-device-code` or pre-authenticate Graph SDK to eliminate hidden browser sign-in windows (the #1 blocker in v0.75)
-- **Auto-retry failed permission steps** — when `setup all` reports `[FAILED]` for MCP/Bot/Graph permissions, automatically run `a365 setup permissions mcp`, `a365 setup permissions bot`, `a365 setup blueprint` in sequence
 - **`a365 cleanup` support** — tear down failed deployments cleanly before re-running
 - **Local agent testing** — integrate Test Sample Agent App (Local) Guide as a pre-deploy verification step
 - **Post-deployment health check** — after `a365 deploy`, query Web App logs to confirm the agent is responding to messages
