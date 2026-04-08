@@ -121,7 +121,13 @@ Uses Microsoft Learn documentation via MCP for up-to-date context.
 > *Named after ISRO's second indigenous rocket, the RH-100.*
 
 Planned for the next release:
-- Automated WAM browser auth handling to eliminate hidden sign-in windows
-- `a365 cleanup` support for tearing down failed deployments
-- Local agent testing via the Test Sample Agent App (Local) Guide before deploying to Azure
-- Post-deployment health-check that queries Web App logs to confirm the agent is responding
+- **WAM auth workaround** — explore `--use-device-code` or pre-authenticate Graph SDK to eliminate hidden browser sign-in windows (the #1 blocker in v0.75)
+- **Auto-retry failed permission steps** — when `setup all` reports `[FAILED]` for MCP/Bot/Graph permissions, automatically run `a365 setup permissions mcp`, `a365 setup permissions bot`, `a365 setup blueprint` in sequence
+- **`a365 cleanup` support** — tear down failed deployments cleanly before re-running
+- **Local agent testing** — integrate Test Sample Agent App (Local) Guide as a pre-deploy verification step
+- **Post-deployment health check** — after `a365 deploy`, query Web App logs to confirm the agent is responding to messages
+- **A365 CLI version check** — detect outdated CLI versions and auto-update or warn before proceeding
+- **Section sub-numbering** — add §1.2–§1.5, §2.1–§2.3, §3.1–§3.2, §4.1–§4.4 for precise navigation
+- **§4.2 · Add and Test the Microsoft Outlook Mail MCP Server** — guided Copilot Studio MCP integration with connection setup and email test
+- **§4.3 · Add the Word and SharePoint MCP Servers** — extend agent with document creation and site access capabilities
+- **§4.4 · Test Multiple MCP Servers Together** — orchestrate Word + SharePoint + Outlook in a single prompt, verify end-to-end

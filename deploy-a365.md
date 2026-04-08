@@ -643,51 +643,14 @@ Tell user: *"Sign in with `<global_admin>` when browser windows appear."*
 
 **Ask the user:** *"Can you confirm all four signs above? (yes / which failed / exit)"*
 
----
-
-### Part 2 · Add and Test the Microsoft Outlook Mail MCP Server
-
-📖 The first MCP server gives your Copilot Studio agent the ability to read and send email. You'll add the Microsoft Outlook Mail MCP Server, create a connection, and test it by asking the agent to send an email — proving that a no-code agent can interact with enterprise services through MCP.
-
-**Steps 9–15** — Tools → Add Tool → Model Context Protocol → search "Mail" → Microsoft Outlook Mail MCP Server → Create New Connection → sign in → Add and Configure → Test
-
-✅ Validate Your Response:
-- [ ] Email arrives in Outlook inbox after a few moments
-
-**Ask the user:** *"Did the email arrive? (yes / no / exit)"*
-
----
-
-### Part 3 · Add the Word and SharePoint MCP Servers
-
-📖 Now extend further — add Word and SharePoint MCP servers to give the agent document creation and site access capabilities. Multiple MCP servers work in concert, allowing the agent to chain operations across services.
-
-**Steps 16–18** — Add Microsoft Word MCP → Add SharePoint MCP Server
-
----
-
-### Part 4 · Test Multiple MCP Servers Together
-
-📖 The final test exercises all three MCP servers simultaneously — the agent creates a Word document, saves it to SharePoint, and emails a link. This demonstrates the orchestration power of MCP: multiple enterprise services coordinated through a single natural language prompt.
-
-**Steps 19–20** — Test with multi-server prompt → verify email with document link
-
-✅ Validate Your Response:
-- [ ] Email arrives with link to newly created Word document
-
-**Ask the user:** *"Did the email with document link arrive? If delivery failed, include your email address explicitly in the prompt and retry. (yes / retry / exit)"*
-
 ✅ §4 Summary Checklist:
 - [ ] Copilot Studio environment correctly selected
 - [ ] Blank agent created successfully
 - [ ] Web Search disabled in Knowledge
 - [ ] Content Moderation set to Low
-- [ ] General Knowledge and Web Info set to Off — saved
-- [ ] Outlook Mail MCP Server added and connection established
-- [ ] Email sent and received via Mail MCP server
-- [ ] Word MCP Server added to agent
-- [ ] SharePoint MCP Server added to agent
-- [ ] Multi-server prompt executed — document created and delivered via email
+- [ ] General Knowledge and Web Info set to Off — settings saved
+
+> 📝 Parts 2–4 (Outlook Mail MCP, Word/SharePoint MCP, multi-server testing) are planned for v1.00 (Rohini-100).
 
 ---
 
